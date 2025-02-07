@@ -26,7 +26,10 @@ defmodule PlantPulseWeb.Router do
     get "/plants/:id", PlantsController, :show
     post "/plants", PlantsController, :create
 
+    get "/sensors", SensorsController, :index
+    get "/sensors/:id", SensorsController, :show
     post "/sensors", SensorsController, :create
+
     post "/readings", ReadingsController, :create
   end
 
