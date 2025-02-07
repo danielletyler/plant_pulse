@@ -23,6 +23,8 @@ defmodule PlantPulseWeb.Router do
   scope "/api", PlantPulseWeb do
     pipe_through :api
     post "/plants", PlantsController, :create
+    post "/sensors", SensorsController, :create
+    post "/readings", ReadingsController, :create
   end
 
   # Other scopes may use custom stacks.
