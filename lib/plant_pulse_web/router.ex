@@ -26,10 +26,13 @@ defmodule PlantPulseWeb.Router do
     get "/plants/:id", PlantsController, :show
     post "/plants", PlantsController, :create
 
+    get "/plants/:plant_id/sensors", SensorsController, :list_for_plant
     get "/sensors", SensorsController, :index
     get "/sensors/:id", SensorsController, :show
     post "/sensors", SensorsController, :create
 
+    get "/sensors/:sensor_id/readings", ReadingsController, :list_for_sensor
+    get "/plants/:plant_id/readings", ReadingsController, :list_for_plant
     get "/readings", ReadingsController, :index
     get "/readings/:id", ReadingsController, :show
     post "/readings", ReadingsController, :create

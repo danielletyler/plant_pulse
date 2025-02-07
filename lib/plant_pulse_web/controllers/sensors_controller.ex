@@ -8,6 +8,11 @@ defmodule PlantPulseWeb.SensorsController do
     render(conn, :index, sensors: sensors)
   end
 
+  def list_for_plant(conn, %{"plant_id" => plant_id}) do
+    sensors = Sensors.get_by_plant(plant_id)
+    render(conn, :index, sensors: sensors)
+  end
+
   def show(conn, %{"id" => id}) do
     sensor = Sensors.get_sensor!(id)
     render(conn, :show, sensor: sensor)

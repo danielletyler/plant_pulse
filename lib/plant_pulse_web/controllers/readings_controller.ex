@@ -8,6 +8,16 @@ defmodule PlantPulseWeb.ReadingsController do
     render(conn, :index, readings: readings)
   end
 
+  def list_for_plant(conn, %{"plant_id" => plant_id}) do
+    readings = Readings.get_by_plant(plant_id)
+    render(conn, :index, readings: readings)
+  end
+
+  def list_for_sensor(conn, %{"sensor_id" => sensor_id}) do
+    readings = Readings.get_by_sensor(sensor_id)
+    render(conn, :index, readings: readings)
+  end
+
   def show(conn, %{"id" => id}) do
     reading = Readings.get_reading!(id)
     render(conn, :show, reading: reading)

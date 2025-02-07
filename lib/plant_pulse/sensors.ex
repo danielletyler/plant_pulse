@@ -38,6 +38,15 @@ defmodule PlantPulse.Sensors do
   def get_sensor!(id), do: Repo.get!(Sensor, id)
 
   @doc """
+  Gets sensors for plant.
+  """
+  def get_by_plant(plant_id) do
+    Sensor
+    |> where([s], s.plant_id == ^plant_id)
+    |> Repo.all()
+  end
+
+  @doc """
   Creates a sensor.
 
   ## Examples

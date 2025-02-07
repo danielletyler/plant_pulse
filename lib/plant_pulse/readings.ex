@@ -38,6 +38,26 @@ defmodule PlantPulse.Readings do
   def get_reading!(id), do: Repo.get!(Reading, id)
 
   @doc """
+  Gets readings by sensor.
+  """
+  def get_by_sensor(sensor_id) do
+    Reading
+    |> where([r], r.sensor_id == ^sensor_id)
+    |> Repo.all()
+  end
+
+  @doc """
+  Gets readings for plant.
+  """
+  def get_by_plant(plant_id) do
+    Reading
+    |> join(:inner, [r], s in assoc(r, :sensor))
+    |> join(:inner, [_r, s], p in assoc(s, :plant))
+    |> where([_r, _s, p], p.id == ^plant_id)
+    |> Repo.all()
+  end
+
+  @doc """
   Creates a reading.
 
   ## Examples
