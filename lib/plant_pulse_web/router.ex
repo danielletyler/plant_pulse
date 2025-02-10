@@ -18,6 +18,8 @@ defmodule PlantPulseWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/dashboard", Dashboard.DashboardLive
   end
 
   scope "/api", PlantPulseWeb do

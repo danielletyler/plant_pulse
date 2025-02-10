@@ -17,7 +17,8 @@ defmodule PlantPulse.Application do
       # Start a worker by calling: PlantPulse.Worker.start_link(arg)
       # {PlantPulse.Worker, arg},
       # Start to serve requests, typically the last entry
-      PlantPulseWeb.Endpoint
+      PlantPulseWeb.Endpoint,
+      TwMerge.Cache
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
