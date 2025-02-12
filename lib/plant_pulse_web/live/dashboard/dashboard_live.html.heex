@@ -1,3 +1,9 @@
 <div>
   <.header>Dashboard</.header>
+  <p>LED is currently: <%= @led_state %></p>
+  <button phx-click="turn_on">Turn On</button>
+  <button phx-click="turn_off">Turn Off</button>
+  <div>
+    <p>Light Sensor is currently: <%= @ldr_value %></p>
+  </div>
 </div>

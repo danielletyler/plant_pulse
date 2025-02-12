@@ -18,6 +18,7 @@ defmodule PlantPulse.Application do
       # {PlantPulse.Worker, arg},
       # Start to serve requests, typically the last entry
       PlantPulseWeb.Endpoint,
+      PlantPulse.MQTTClient,
       TwMerge.Cache
     ]
 

@@ -22,6 +22,13 @@ config :plant_pulse, PlantPulseWeb.Endpoint,
   pubsub_server: PlantPulse.PubSub,
   live_view: [signing_salt: "5ZWuUt3u"]
 
+config :plant_pulse, PlantPulse.MQTTClient,
+  client_id: "plant_pulse_client",
+  broker_url: "40c4489d8b17431396e6d975f75207a4.s1.eu.hivemq.cloud",
+  username: 'plant-pulse-admin',
+  password: 'SevenIron1998!',
+  topic: "esp32/ir_sensor"
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
