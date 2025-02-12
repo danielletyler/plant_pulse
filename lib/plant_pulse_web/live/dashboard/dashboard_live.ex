@@ -6,16 +6,10 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
     {:ok, assign(socket, led_state: "off", ldr_value: 0)}
   end
 
-  def handle_event("turn_on", _params, socket) do
-    PlantPulseWeb.Endpoint.broadcast!("led:lobby", "toggle_led", %{"state" => "ON"})
+  def handle_event("read", _params, socket) do
+    Tortoise311.publish("plant_pulse_client", "esp32/receive", "READ")
 
     {:noreply, assign(socket, led_state: "on")}
-  end
-
-  def handle_event("turn_off", _params, socket) do
-    PlantPulseWeb.Endpoint.broadcast!("led:lobby", "toggle_led", %{"state" => "OFF"})
-
-    {:noreply, assign(socket, led_state: "off")}
   end
 
   def handle_info(
