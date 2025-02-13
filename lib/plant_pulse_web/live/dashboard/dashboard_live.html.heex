@@ -1,8 +1,11 @@
 <div>
   <.header>Dashboard</.header>
+  <.button phx-click="read_all">Read All</.button>
   <.button phx-click="read" phx-value-sensor="esp32/photocell">Read Photocell</.button>
-  <p>Light Sensor is currently: <%= @ldr_value %></p>
   <.button phx-click="read" phx-value-sensor="esp32/dht11">Read DHT11</.button>
+  <.button phx-click="read" phx-value-sensor="esp32/sm_sensor">Read Soil Moisture Sensor</.button>
+  <p>Light Sensor is currently: <%= @ldr_value %></p>
   <p>Humidity is currently: <%= @humi_value %></p>
   <p>Temperature is currently: <%= @temp_value %></p>
+  <p>Soil Moisture is currently: <%= @sm_value %></p>
 </div>

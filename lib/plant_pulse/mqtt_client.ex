@@ -28,7 +28,12 @@ defmodule PlantPulse.MQTTClient do
            },
            user_name: "plant-pulse-admin",
            password: "SevenIron1998!",
-           subscriptions: [{"esp32/light", 0}, {"esp32/humidity", 0}, {"esp32/temp", 0}]
+           subscriptions: [
+             {"esp32/light", 0},
+             {"esp32/humidity", 0},
+             {"esp32/temp", 0},
+             {"esp32/soil_moisture", 0}
+           ]
          ) do
       {:ok, pid} ->
         IO.inspect("Tortoise client started successfully")
@@ -42,18 +47,8 @@ defmodule PlantPulse.MQTTClient do
 
   def init(_opts), do: {:ok, %{}}
 
-  def handle_message(["esp32", "light"], payload, state) do
-    PlantPulseWeb.Endpoint.broadcast("sensors", "light", %{ldr_value: payload})
-    {:ok, state}
-  end
-
-  def handle_message(["esp32", "humidity"], payload, state) do
-    PlantPulseWeb.Endpoint.broadcast("sensors", "humidity", %{humi_value: payload})
-    {:ok, state}
-  end
-
-  def handle_message(["esp32", "temp"], payload, state) do
-    PlantPulseWeb.Endpoint.broadcast("sensors", "temp", %{temp_value: payload})
+  def handle_message(["esp32", type], payload, state) do
+    PlantPulseWeb.Endpoint.broadcast("sensors", type, payload)
     {:ok, state}
   end
 end
