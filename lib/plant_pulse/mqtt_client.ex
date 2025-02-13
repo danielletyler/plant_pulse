@@ -1,11 +1,7 @@
 defmodule PlantPulse.MQTTClient do
   use Tortoise311.Handler
 
-  @topic "esp32/ir_sensor"
-
   def child_spec(_opts) do
-    IO.inspect("child spec")
-
     %{
       id: __MODULE__,
       start: {__MODULE__, :start_link, [[]]},
@@ -16,8 +12,6 @@ defmodule PlantPulse.MQTTClient do
   end
 
   def start_link(_opts) do
-    IO.inspect("start link")
-
     case Tortoise311.Supervisor.start_child(
            client_id: "plant_pulse_client",
            #  handler: {Tortoise311.Handler.Logger, []},
@@ -34,7 +28,7 @@ defmodule PlantPulse.MQTTClient do
            },
            user_name: "plant-pulse-admin",
            password: "SevenIron1998!",
-           subscriptions: [{"esp32/ir_sensor", 0}]
+           subscriptions: [{"esp32/light", 0}, {"esp32/humidity", 0}, {"esp32/temp", 0}]
          ) do
       {:ok, pid} ->
         IO.inspect("Tortoise client started successfully")
@@ -46,15 +40,20 @@ defmodule PlantPulse.MQTTClient do
     end
   end
 
-  def init(_opts) do
-    IO.inspect("init")
-    {:ok, %{}}
+  def init(_opts), do: {:ok, %{}}
+
+  def handle_message(["esp32", "light"], payload, state) do
+    PlantPulseWeb.Endpoint.broadcast("sensors", "light", %{ldr_value: payload})
+    {:ok, state}
   end
 
-  def handle_message(_topic, payload, state) do
-    # Broadcast MQTT message to LiveView
-    IO.inspect("handle message")
-    PlantPulseWeb.Endpoint.broadcast("sensor", "update", %{ldr_value: payload})
+  def handle_message(["esp32", "humidity"], payload, state) do
+    PlantPulseWeb.Endpoint.broadcast("sensors", "humidity", %{humi_value: payload})
+    {:ok, state}
+  end
+
+  def handle_message(["esp32", "temp"], payload, state) do
+    PlantPulseWeb.Endpoint.broadcast("sensors", "temp", %{temp_value: payload})
     {:ok, state}
   end
 end

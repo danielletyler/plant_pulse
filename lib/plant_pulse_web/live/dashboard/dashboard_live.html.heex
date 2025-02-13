@@ -1,8 +1,8 @@
 <div>
   <.header>Dashboard</.header>
-  <p>LED is currently: <%= @led_state %></p>
-  <.button phx-click="read">Read Sensor</.button>
-  <div>
-    <p>Light Sensor is currently: <%= @ldr_value %></p>
-  </div>
+  <.button phx-click="read" phx-value-sensor="esp32/photocell">Read Photocell</.button>
+  <p>Light Sensor is currently: <%= @ldr_value %></p>
+  <.button phx-click="read" phx-value-sensor="esp32/dht11">Read DHT11</.button>
+  <p>Humidity is currently: <%= @humi_value %></p>
+  <p>Temperature is currently: <%= @temp_value %></p>
 </div>
