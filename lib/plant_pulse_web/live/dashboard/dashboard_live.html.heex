@@ -8,4 +8,25 @@
   <p>Humidity is currently: <%= @humi_value %></p>
   <p>Temperature is currently: <%= @temp_value %></p>
   <p>Soil Moisture is currently: <%= @sm_value %></p>
+  <.button phx-click={show_modal_core("new-plant-modal")}>
+    Open modal
+  </.button>
+
+  <.modal id='new-plant-modal'>
+    <.form :let={f} for={@new_changeset} phx-submit="save-new" phx-change="validate" class="w-2/3 space-y-6">
+      <.form_item>
+        <.form_label error={not Enum.empty?(f[:name].errors)}>Name</.form_label>
+        <.input field={f[:name]} type="text" placeholder="name" phx-debounce="500" />
+      </.form_item>
+      <.form_item>
+        <.form_label error={not Enum.empty?(f[:species].errors)}>Species</.form_label>
+        <.input field={f[:species]} type="text" placeholder="species" phx-debounce="500" />
+      </.form_item>
+      <.form_item>
+        <.form_label error={not Enum.empty?(f[:species].errors)}>Species</.form_label>
+        <.input field={f[:species]} type="text" placeholder="species" phx-debounce="500" />
+      </.form_item>
+      <.button type="submit">Submit</.button>
+    </.form>
+  </.modal>
 </div>

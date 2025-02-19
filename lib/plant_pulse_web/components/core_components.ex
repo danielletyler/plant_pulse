@@ -45,8 +45,8 @@ defmodule PlantPulseWeb.CoreComponents do
     ~H"""
     <div
       id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
+      phx-mounted={@show && show_modal_core(@id)}
+      phx-remove={hide_modal_core(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
@@ -219,13 +219,14 @@ defmodule PlantPulseWeb.CoreComponents do
       <.button>Send!</.button>
       <.button phx-click="go" class="ml-2">Send!</.button>
   """
-  attr :type, :string, default: nil
-  attr :class, :string, default: nil
-  attr :rest, :global, include: ~w(disabled form name value)
 
-  slot :inner_block, required: true
+  # attr :type, :string, default: nil
+  # attr :class, :string, default: nil
+  # attr :rest, :global, include: ~w(disabled form name value)
 
-  def button(assigns) do
+  # slot :inner_block, required: true
+
+  def button_core(assigns) do
     ~H"""
     <button
       type={@type}
@@ -308,7 +309,7 @@ defmodule PlantPulseWeb.CoreComponents do
 
     ~H"""
     <div phx-feedback-for={@name}>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <label_core class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
         <input type="hidden" name={@name} value="false" />
         <input
           type="checkbox"
@@ -320,7 +321,7 @@ defmodule PlantPulseWeb.CoreComponents do
           {@rest}
         />
         <%= @label %>
-      </label>
+      </label_core>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
@@ -329,7 +330,7 @@ defmodule PlantPulseWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label_core for={@id}><%= @label %></.label_core>
       <select
         id={@id}
         name={@name}
@@ -348,7 +349,7 @@ defmodule PlantPulseWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label_core for={@id}><%= @label %></.label_core>
       <textarea
         id={@id}
         name={@name}
@@ -369,7 +370,7 @@ defmodule PlantPulseWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label for={@id}><%= @label %></.label>
+      <.label_core for={@id}><%= @label %></.label_core>
       <input
         type={@type}
         name={@name}
@@ -394,11 +395,11 @@ defmodule PlantPulseWeb.CoreComponents do
   attr :for, :string, default: nil
   slot :inner_block, required: true
 
-  def label(assigns) do
+  def label_core(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label_core for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
       <%= render_slot(@inner_block) %>
-    </label>
+    </label_core>
     """
   end
 
@@ -620,7 +621,7 @@ defmodule PlantPulseWeb.CoreComponents do
     )
   end
 
-  def show_modal(js \\ %JS{}, id) when is_binary(id) do
+  def show_modal_core(js \\ %JS{}, id) when is_binary(id) do
     js
     |> JS.show(to: "##{id}")
     |> JS.show(
@@ -632,7 +633,7 @@ defmodule PlantPulseWeb.CoreComponents do
     |> JS.focus_first(to: "##{id}-content")
   end
 
-  def hide_modal(js \\ %JS{}, id) do
+  def hide_modal_core(js \\ %JS{}, id) do
     js
     |> JS.hide(
       to: "##{id}-bg",
