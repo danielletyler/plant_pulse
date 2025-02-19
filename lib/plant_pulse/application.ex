@@ -19,8 +19,7 @@ defmodule PlantPulse.Application do
       # Start to serve requests, typically the last entry
       PlantPulseWeb.Endpoint,
       PlantPulse.MQTTClient,
-      PlantPulse.Periodic,
-      TwMerge.Cache
+      PlantPulse.Periodic
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

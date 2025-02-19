@@ -226,7 +226,7 @@ defmodule PlantPulseWeb.CoreComponents do
 
   # slot :inner_block, required: true
 
-  def button_core(assigns) do
+  def button(assigns) do
     ~H"""
     <button
       type={@type}

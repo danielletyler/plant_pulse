@@ -2,9 +2,6 @@ defmodule PlantPulseWeb.PlantsLive do
   alias PlantPulse.Plants.Plant
   use PlantPulseWeb, :live_view
 
-  import SaladUI.Button
-  import SaladUI.Form
-
   alias PlantPulse.Plants
 
   def mount(_params, _session, socket) do
@@ -35,29 +32,23 @@ defmodule PlantPulseWeb.PlantsLive do
   def render(assigns) do
     ~H"""
     <div>
-      <.button phx-click={show_modal_core("new-plant-modal")} variant="outline">
+      <button phx-click={show_modal_core("new-plant-modal")} variant="outline">
         New Plant
-      </.button>
+      </button>
     </div>
-    <.button :for={plant <- @plants} phx-click={JS.navigate(~p"/plants/#{plant.id}")}>
+    <button :for={plant <- @plants} phx-click={JS.navigate(~p"/plants/#{plant.id}")}>
       <%= plant.name %>
-    </.button>
+    </button>
 
     <.modal id="new-plant-modal" on_cancel={JS.push("reset-new-plant")}>
       <.form :let={f} for={@changeset} phx-submit="save-new" class="w-2/3 space-y-6">
-        <.form_item>
-          <.form_label error={not Enum.empty?(f[:name].errors)}>Name</.form_label>
-          <.input field={f[:name]} type="text" phx-debounce="500" />
-        </.form_item>
-        <.form_item>
-          <.form_label error={not Enum.empty?(f[:species].errors)}>Species</.form_label>
-          <.input field={f[:species]} type="text" phx-debounce="500" />
-        </.form_item>
-        <.form_item>
-          <.form_label error={not Enum.empty?(f[:mac_address].errors)}>ESP32 MAC Address</.form_label>
-          <.input field={f[:mac_address]} type="text" phx-debounce="500" />
-        </.form_item>
-        <.button type="submit">Submit</.button>
+        <label error={not Enum.empty?(f[:name].errors)}>Name</label>
+        <.input field={f[:name]} type="text" phx-debounce="500" />
+        <label error={not Enum.empty?(f[:species].errors)}>Species</label>
+        <.input field={f[:species]} type="text" phx-debounce="500" />
+        <label error={not Enum.empty?(f[:mac_address].errors)}>ESP32 MAC Address</label>
+        <.input field={f[:mac_address]} type="text" phx-debounce="500" />
+        <button type="submit">Submit</button>
       </.form>
     </.modal>
     """

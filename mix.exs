@@ -51,7 +51,6 @@ defmodule PlantPulse.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
-      {:salad_ui, "~> 0.14"},
       {:tortoise, "~> 0.10"},
       {:tortoise311, "~> 0.11"}
     ]
