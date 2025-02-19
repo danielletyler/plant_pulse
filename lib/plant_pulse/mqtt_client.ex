@@ -29,10 +29,10 @@ defmodule PlantPulse.MQTTClient do
            user_name: "plant-pulse-admin",
            password: "SevenIron1998!",
            subscriptions: [
-             {"esp32/light", 0},
-             {"esp32/humidity", 0},
-             {"esp32/temp", 0},
-             {"esp32/soil_moisture", 0}
+             {"+/light", 0},
+             {"+/humidity", 0},
+             {"+/temp", 0},
+             {"+/soil_moisture", 0}
            ]
          ) do
       {:ok, pid} ->
@@ -47,8 +47,8 @@ defmodule PlantPulse.MQTTClient do
 
   def init(_opts), do: {:ok, %{}}
 
-  def handle_message(["esp32", type], payload, state) do
-    PlantPulseWeb.Endpoint.broadcast("sensors", type, payload)
+  def handle_message([mac_address, type], value, state) do
+    PlantPulseWeb.Endpoint.broadcast(mac_address, type, %{value: value})
     {:ok, state}
   end
 end

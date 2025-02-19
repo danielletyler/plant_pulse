@@ -8,7 +8,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
   alias PlantPulse.Plants
 
   def mount(_params, _session, socket) do
-    if connected?(socket), do: PlantPulseWeb.Endpoint.subscribe("sensors")
+    if connected?(socket), do: PlantPulseWeb.Endpoint.subscribe("14:2B:2F:D9:4C:18")
 
     changeset = Plants.change_plant(%Plant{})
 
@@ -52,32 +52,33 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
   end
 
   def handle_event("read_all", _, socket) do
-    Tortoise311.publish("plant_pulse_client", "esp32/photocell", "READ")
-    Tortoise311.publish("plant_pulse_client", "esp32/dht11", "READ")
-    Tortoise311.publish("plant_pulse_client", "esp32/sm_sensor", "READ")
+    # get plant.mac_address from socket
+    Tortoise311.publish("plant_pulse_client", "14:2B:2F:D9:4C:18/photocell", "READ")
+    Tortoise311.publish("plant_pulse_client", "14:2B:2F:D9:4C:18/dht11", "READ")
+    Tortoise311.publish("plant_pulse_client", "14:2B:2F:D9:4C:18/sm_sensor", "READ")
 
     {:noreply, socket}
   end
 
   def handle_event("read", %{"sensor" => sensor}, socket) do
-    Tortoise311.publish("plant_pulse_client", sensor, "READ")
+    Tortoise311.publish("plant_pulse_client", "14:2B:2F:D9:4C:18/#{sensor}", "READ")
 
     {:noreply, socket}
   end
 
-  def handle_info(%{topic: "sensors", event: "light", payload: payload}, socket) do
-    {:noreply, assign(socket, ldr_value: payload)}
+  def handle_info(%{event: "light", payload: %{value: value}}, socket) do
+    {:noreply, assign(socket, ldr_value: value)}
   end
 
-  def handle_info(%{topic: "sensors", event: "humidity", payload: payload}, socket) do
-    {:noreply, assign(socket, humi_value: payload)}
+  def handle_info(%{event: "humidity", payload: %{value: value}}, socket) do
+    {:noreply, assign(socket, humi_value: value)}
   end
 
-  def handle_info(%{topic: "sensors", event: "temp", payload: payload}, socket) do
-    {:noreply, assign(socket, temp_value: payload)}
+  def handle_info(%{event: "temp", payload: %{value: value}}, socket) do
+    {:noreply, assign(socket, temp_value: value)}
   end
 
-  def handle_info(%{topic: "sensors", event: "soil_moisture", payload: payload}, socket) do
-    {:noreply, assign(socket, sm_value: payload)}
+  def handle_info(%{event: "soil_moisture", payload: %{value: value}}, socket) do
+    {:noreply, assign(socket, sm_value: value)}
   end
 end
