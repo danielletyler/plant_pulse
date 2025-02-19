@@ -220,19 +220,19 @@ defmodule PlantPulseWeb.CoreComponents do
       <.button phx-click="go" class="ml-2">Send!</.button>
   """
 
-  # attr :type, :string, default: nil
-  # attr :class, :string, default: nil
-  # attr :rest, :global, include: ~w(disabled form name value)
+  attr :type, :string, default: nil
+  attr :class, :string, default: nil
+  attr :variant, :string, default: "primary"
+  attr :rest, :global, include: ~w(disabled form name value)
 
-  # slot :inner_block, required: true
+  slot :inner_block, required: true
 
   def button(assigns) do
     ~H"""
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        get_button_class(@variant),
         @class
       ]}
       {@rest}
@@ -241,6 +241,18 @@ defmodule PlantPulseWeb.CoreComponents do
     </button>
     """
   end
+
+  def get_button_class("primary"),
+    do:
+      "px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+
+  def get_button_class("secondary"),
+    do:
+      "px-4 text-sm py-2 bg-transparent text-green-500 border border-green-500 rounded-md hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-300"
+
+  def get_button_class("tertiary"),
+    do:
+      "px-4 py-2 bg-green-200 text-sm text-green-800 rounded-lg shadow-md hover:shadow-lg hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-500"
 
   @doc """
   Renders an input with label and error messages.
@@ -385,6 +397,23 @@ defmodule PlantPulseWeb.CoreComponents do
         {@rest}
       />
       <.error :for={msg <- @errors}><%= msg %></.error>
+    </div>
+    """
+  end
+
+  attr :class, :string, default: nil
+  attr :rest, :global, include: ~w(disabled form name value)
+
+  def clickable_card(assigns) do
+    ~H"""
+    <div
+      class={[
+        "max-w-sm rounded-lg border border-gray-300 shadow-sm hover:shadow-lg transition duration-300 cursor-pointer",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
     </div>
     """
   end

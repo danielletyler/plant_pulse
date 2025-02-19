@@ -71,7 +71,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
       <.header><%= @plant.name %></.header>
 
       <div class="p-6">
-        <button class="mb-2" phx-click="read_all">Read All</button>
+        <.button class="mb-2" phx-click="read_all">Read All</.button>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div class="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col items-center">
             <div class="text-lg font-semibold">Light Sensor</div>

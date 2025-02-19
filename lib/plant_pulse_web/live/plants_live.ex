@@ -32,13 +32,21 @@ defmodule PlantPulseWeb.PlantsLive do
   def render(assigns) do
     ~H"""
     <div>
-      <button phx-click={show_modal_core("new-plant-modal")} variant="outline">
+      <.button class="mb-4" phx-click={show_modal_core("new-plant-modal")} variant="secondary">
         New Plant
-      </button>
+      </.button>
     </div>
-    <button :for={plant <- @plants} phx-click={JS.navigate(~p"/plants/#{plant.id}")}>
-      <%= plant.name %>
-    </button>
+
+    <div class="grid grid-cols-3 gap-4">
+      <.clickable_card :for={plant <- @plants} phx-click={JS.navigate(~p"/plants/#{plant.id}")}>
+        <div class="p-4">
+          <h3 class="text-xl font-semibold text-gray-800"><%= plant.name %></h3>
+          <p class="text-gray-600 mt-2">
+            This is a description of the card. Maybe this will be an icon or image or overview of last poll.
+          </p>
+        </div>
+      </.clickable_card>
+    </div>
 
     <.modal id="new-plant-modal" on_cancel={JS.push("reset-new-plant")}>
       <.form :let={f} for={@changeset} phx-submit="save-new" class="w-2/3 space-y-6">
