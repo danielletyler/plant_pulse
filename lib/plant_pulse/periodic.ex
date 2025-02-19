@@ -11,15 +11,15 @@ defmodule PlantPulse.Periodic do
   end
 
   def handle_info(:work, state) do
-    Tortoise311.publish("plant_pulse_client", "esp32/photocell", "READ")
-    Tortoise311.publish("plant_pulse_client", "esp32/dht11", "READ")
-    Tortoise311.publish("plant_pulse_client", "esp32/sm_sensor", "READ")
+    Tortoise311.publish("plant_pulse_client", "periodic/photocell", "READ")
+    Tortoise311.publish("plant_pulse_client", "periodic/dht11", "READ")
+    Tortoise311.publish("plant_pulse_client", "periodic/sm_sensor", "READ")
 
     schedule_work()
     {:noreply, state}
   end
 
   defp schedule_work() do
-    Process.send_after(self(), :work, :timer.minutes(1))
+    Process.send_after(self(), :work, :timer.hours(1))
   end
 end

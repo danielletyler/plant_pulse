@@ -19,7 +19,8 @@ defmodule PlantPulseWeb.Router do
 
     get "/", PageController, :home
 
-    live "/dashboard", Dashboard.DashboardLive
+    live "/plants", PlantsLive
+    live "/plants/:id", Dashboard.DashboardLive
   end
 
   scope "/api", PlantPulseWeb do
