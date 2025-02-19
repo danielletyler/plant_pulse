@@ -8,15 +8,27 @@ defmodule PlantPulse.Plants.Plant do
   schema "plants" do
     field(:name, :string)
     field(:species, :string)
+    field(:mac_address, :string)
     has_many(:sensors, Sensor)
 
     timestamps(type: :utc_datetime)
   end
 
+  @attrs [
+    :name,
+    :species,
+    :mac_address
+  ]
+
+  @required [
+    :name,
+    :mac_address
+  ]
+
   @doc false
   def changeset(plant, attrs) do
     plant
-    |> cast(attrs, [:name, :species])
-    |> validate_required([:name])
+    |> cast(attrs, @attrs)
+    |> validate_required(@required)
   end
 end

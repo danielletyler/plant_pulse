@@ -12,19 +12,19 @@
     Open modal
   </.button>
 
-  <.modal id='new-plant-modal'>
+  <.modal id='new-plant-modal' on_cancel={JS.push("reset-new-plant")}>
     <.form :let={f} for={@new_changeset} phx-submit="save-new" phx-change="validate" class="w-2/3 space-y-6">
       <.form_item>
         <.form_label error={not Enum.empty?(f[:name].errors)}>Name</.form_label>
-        <.input field={f[:name]} type="text" placeholder="name" phx-debounce="500" />
+        <.input field={f[:name]} type="text" phx-debounce="500" />
       </.form_item>
       <.form_item>
         <.form_label error={not Enum.empty?(f[:species].errors)}>Species</.form_label>
-        <.input field={f[:species]} type="text" placeholder="species" phx-debounce="500" />
+        <.input field={f[:species]} type="text" phx-debounce="500" />
       </.form_item>
       <.form_item>
-        <.form_label error={not Enum.empty?(f[:species].errors)}>Species</.form_label>
-        <.input field={f[:species]} type="text" placeholder="species" phx-debounce="500" />
+        <.form_label error={not Enum.empty?(f[:mac_address].errors)}>ESP32 MAC Address</.form_label>
+        <.input field={f[:mac_address]} type="text" phx-debounce="500" />
       </.form_item>
       <.button type="submit">Submit</.button>
     </.form>
