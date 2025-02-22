@@ -61,7 +61,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
             <div class="text-lg font-semibold"><%= reading.value_type %></div>
             <div class="text-gray-600">Value: <%= reading.value %></div>
             <div class="text-gray-400 text-xs mt-1">
-              <%= format(reading.timestamp) %>
+              <%= format(reading.inserted_at) %>
             </div>
             <button class="mt-4" phx-click="read" phx-value-sensor="sm_sensor">
               <svg
