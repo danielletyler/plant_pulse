@@ -29,6 +29,7 @@ defmodule PlantPulse.Plants.Plant do
   def changeset(plant, attrs) do
     plant
     |> cast(attrs, @attrs)
+    |> cast_assoc(:sensors, with: &PlantPulse.Sensors.Sensor.changeset/2)
     |> validate_required(@required)
   end
 end

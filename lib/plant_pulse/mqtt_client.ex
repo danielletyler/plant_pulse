@@ -1,4 +1,7 @@
 defmodule PlantPulse.MQTTClient do
+  alias PlantPulse.Sensors.Sensor
+  alias PlantPulse.Readings
+  alias PlantPulse.Sensors
   use Tortoise311.Handler
 
   def child_spec(_opts) do
@@ -48,6 +51,12 @@ defmodule PlantPulse.MQTTClient do
   def init(_opts), do: {:ok, %{}}
 
   def handle_message([mac_address, type], value, state) do
+    # use mac address and type to get sensor_id through plant
+    sensor = Sensors.get_by_mac(mac_address, Sensor.reading_type_to_sensor(type))
+    value = (is_binary(value) && value |> String.trim() |> String.to_float()) || value
+    Readings.create_reading(%{value: value, sensor_id: sensor.id}) |> IO.inspect()
+
+    IO.inspect(value)
     PlantPulseWeb.Endpoint.broadcast(mac_address, type, %{value: value})
     {:ok, state}
   end

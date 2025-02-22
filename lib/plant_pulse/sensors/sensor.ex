@@ -7,7 +7,7 @@ defmodule PlantPulse.Sensors.Sensor do
   alias PlantPulse.Plants.Plant
 
   schema "sensors" do
-    field(:type, Ecto.Enum, values: [:moisture, :temperature, :humidity, :light])
+    field(:type, Ecto.Enum, values: [:photocell, :dht11, :sm_sensor])
     belongs_to(:plant, Plant)
     has_many(:readings, Reading)
 
@@ -17,7 +17,12 @@ defmodule PlantPulse.Sensors.Sensor do
   @doc false
   def changeset(sensor, attrs) do
     sensor
-    |> cast(attrs, [:type, :plant_id])
-    |> validate_required([:type, :plant_id])
+    |> cast(attrs, [:type])
+    |> validate_required([:type])
   end
+
+  def reading_type_to_sensor("light"), do: :photocell
+  def reading_type_to_sensor("humidity"), do: :dht11
+  def reading_type_to_sensor("temp"), do: :dht11
+  def reading_type_to_sensor("soil_moisture"), do: :sm_sensor
 end

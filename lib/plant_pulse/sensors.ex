@@ -46,6 +46,14 @@ defmodule PlantPulse.Sensors do
     |> Repo.all()
   end
 
+  def get_by_mac(mac, type) do
+    Sensor
+    |> join(:inner, [s], p in assoc(s, :plant))
+    |> where([_s, p], p.mac_address == ^mac)
+    |> where([s, p], s.type == ^type)
+    |> Repo.one()
+  end
+
   @doc """
   Creates a sensor.
 

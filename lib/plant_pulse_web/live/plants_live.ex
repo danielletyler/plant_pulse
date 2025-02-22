@@ -1,17 +1,34 @@
 defmodule PlantPulseWeb.PlantsLive do
+  alias PlantPulse.Sensors
+  alias PlantPulse.Sensors.Sensor
   alias PlantPulse.Plants.Plant
   use PlantPulseWeb, :live_view
+
+  import Phoenix.HTML.Form
 
   alias PlantPulse.Plants
 
   def mount(_params, _session, socket) do
     plants = Plants.list_plants()
 
-    {:ok, assign(socket, plants: plants, changeset: Plants.change_plant(%Plant{}))}
+    {:ok,
+     assign(socket,
+       plants: plants,
+       changeset: Plants.change_plant(%Plant{sensors: [Sensors.change_sensor(%Sensor{})]})
+     )}
   end
 
   def handle_event("save-new", %{"plant" => plant_params}, socket) do
-    case Plants.create_plant(plant_params) do
+    %{"sensors" => %{"0" => sensors}} = plant_params
+
+    selected_sensors =
+      sensors
+      |> Enum.filter(fn {_sensor, value} -> value == "true" end)
+      |> Enum.map(fn {type, _value} -> %{"type" => type} end)
+
+    new_plant = %{plant_params | "sensors" => selected_sensors} |> IO.inspect()
+
+    case Plants.create_plant(new_plant) do
       {:ok, _plant} ->
         {:noreply,
          socket
@@ -50,13 +67,32 @@ defmodule PlantPulseWeb.PlantsLive do
 
     <.modal id="new-plant-modal" on_cancel={JS.push("reset-new-plant")}>
       <.form :let={f} for={@changeset} phx-submit="save-new" class="w-2/3 space-y-6">
-        <label error={not Enum.empty?(f[:name].errors)}>Name</label>
-        <.input field={f[:name]} type="text" phx-debounce="500" />
-        <label error={not Enum.empty?(f[:species].errors)}>Species</label>
-        <.input field={f[:species]} type="text" phx-debounce="500" />
-        <label error={not Enum.empty?(f[:mac_address].errors)}>ESP32 MAC Address</label>
-        <.input field={f[:mac_address]} type="text" phx-debounce="500" />
-        <button type="submit">Submit</button>
+        <.input class="mb-2" field={f[:name]} type="text" phx-debounce="500" label="Name" />
+        <.input field={f[:species]} type="text" phx-debounce="500" label="Species" />
+        <.input field={f[:mac_address]} type="text" phx-debounce="500" label="MAC Address" />
+        <div class="space-y-2">
+          <%= inputs_for f, :sensors, fn sensors -> %>
+            <.input
+              field={sensors[:photocell]}
+              label="Photocell"
+              type="checkbox"
+              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <.input
+              field={sensors[:dht11]}
+              label="DHT11"
+              type="checkbox"
+              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <.input
+              field={sensors[:sm_sensor]}
+              label="SM Sensor"
+              type="checkbox"
+              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+          <% end %>
+        </div>
+        <.button type="submit">Submit</.button>
       </.form>
     </.modal>
     """

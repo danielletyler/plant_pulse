@@ -321,7 +321,7 @@ defmodule PlantPulseWeb.CoreComponents do
 
     ~H"""
     <div phx-feedback-for={@name}>
-      <label_core class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
         <input type="hidden" name={@name} value="false" />
         <input
           type="checkbox"
@@ -333,7 +333,7 @@ defmodule PlantPulseWeb.CoreComponents do
           {@rest}
         />
         <%= @label %>
-      </label_core>
+      </label>
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
@@ -342,7 +342,7 @@ defmodule PlantPulseWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label_core for={@id}><%= @label %></.label_core>
+      <.label for={@id}><%= @label %></.label>
       <select
         id={@id}
         name={@name}
@@ -361,7 +361,7 @@ defmodule PlantPulseWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label_core for={@id}><%= @label %></.label_core>
+      <.label for={@id}><%= @label %></.label>
       <textarea
         id={@id}
         name={@name}
@@ -382,7 +382,7 @@ defmodule PlantPulseWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div phx-feedback-for={@name}>
-      <.label_core for={@id}><%= @label %></.label_core>
+      <.label for={@id}><%= @label %></.label>
       <input
         type={@type}
         name={@name}
@@ -403,6 +403,7 @@ defmodule PlantPulseWeb.CoreComponents do
 
   attr :class, :string, default: nil
   attr :rest, :global, include: ~w(disabled form name value)
+  slot :inner_block, required: true
 
   def clickable_card(assigns) do
     ~H"""
@@ -424,11 +425,11 @@ defmodule PlantPulseWeb.CoreComponents do
   attr :for, :string, default: nil
   slot :inner_block, required: true
 
-  def label_core(assigns) do
+  def label(assigns) do
     ~H"""
-    <label_core for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
       <%= render_slot(@inner_block) %>
-    </label_core>
+    </label>
     """
   end
 
