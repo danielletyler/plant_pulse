@@ -4,6 +4,7 @@ defmodule PlantPulse.Readings do
   """
 
   import Ecto.Query, warn: false
+  alias PlantPulse.Sensors
   alias PlantPulse.Repo
 
   alias PlantPulse.Readings.Reading
@@ -54,6 +55,31 @@ defmodule PlantPulse.Readings do
     |> join(:inner, [r], s in assoc(r, :sensor))
     |> join(:inner, [_r, s], p in assoc(s, :plant))
     |> where([_r, _s, p], p.id == ^plant_id)
+    |> Repo.all()
+  end
+
+  def get_most_recent_readings_for_plant(plant_id) do
+    # figure out which sensors are on plant and get most recent readings for each sensor
+    # sensor_ids = Sensors.get_by_plant(plant_id) |> Enum.map(& &1.id)
+
+    # Reading
+    # |> where([r], r.sensor_id in ^sensor_ids)
+    # |> Repo.all()
+    # |> IO.inspect()
+
+    Reading
+    |> join(:inner, [r], s in assoc(r, :sensor))
+    |> join(:inner, [_r, s], p in assoc(s, :plant))
+    |> where([r, s, p], p.id == ^plant_id)
+    # Group by sensor
+    |> group_by([r, s, p], [s.id, r.value_type, r.value])
+    |> select([r, s, p], %{
+      value_type: r.value_type,
+      value: r.value,
+      # Select max timestamp for the most recent reading
+      timestamp: max(r.inserted_at)
+    })
+    |> order_by([_r, s], s.id)
     |> Repo.all()
   end
 

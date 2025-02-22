@@ -5,6 +5,7 @@ defmodule PlantPulse.Readings.Reading do
 
   schema "readings" do
     field(:value, :float)
+    field(:value_type, :string)
     belongs_to(:sensor, Sensor)
 
     timestamps(type: :utc_datetime)
@@ -13,7 +14,7 @@ defmodule PlantPulse.Readings.Reading do
   @doc false
   def changeset(reading, attrs) do
     reading
-    |> cast(attrs, [:value, :sensor_id])
+    |> cast(attrs, [:value, :value_type, :sensor_id])
     |> validate_required([:value, :sensor_id])
   end
 end

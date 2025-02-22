@@ -52,7 +52,8 @@ defmodule PlantPulse.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
       {:tortoise, "~> 0.10"},
-      {:tortoise311, "~> 0.11"}
+      {:tortoise311, "~> 0.11"},
+      {:timex, "~> 3.7"}
     ]
   end
 
