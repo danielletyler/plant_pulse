@@ -26,7 +26,7 @@ defmodule PlantPulseWeb.PlantsLive do
       |> Enum.filter(fn {_sensor, value} -> value == "true" end)
       |> Enum.map(fn {type, _value} -> %{"type" => type} end)
 
-    new_plant = %{plant_params | "sensors" => selected_sensors} |> IO.inspect()
+    new_plant = %{plant_params | "sensors" => selected_sensors}
 
     case Plants.create_plant(new_plant) do
       {:ok, _plant} ->

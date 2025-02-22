@@ -52,13 +52,9 @@ defmodule PlantPulse.MQTTClient do
 
   def handle_message([mac_address, type], value, state) do
     # use mac address and type to get sensor_id through plant
-    sensor = Sensors.get_by_mac(mac_address, Sensor.reading_type_to_sensor(type))
+    sensor = Sensors.get_by_mac(mac_address, Sensors.reading_type_to_sensor(type))
 
-    value =
-      (sensor.type == :dht111 && is_binary(value) && value |> String.trim() |> String.to_float()) ||
-        value
-
-    Readings.create_reading(%{value: value, value_type: type, sensor_id: sensor.id})
+    Readings.create_reading(%{value: String.trim(value), value_type: type, sensor_id: sensor.id})
 
     PlantPulseWeb.Endpoint.broadcast(mac_address, "update", %{})
     {:ok, state}

@@ -118,4 +118,9 @@ defmodule PlantPulse.Sensors do
   def change_sensor(%Sensor{} = sensor, attrs \\ %{}) do
     Sensor.changeset(sensor, attrs)
   end
+
+  def reading_type_to_sensor("light"), do: :photocell
+  def reading_type_to_sensor("humidity"), do: :dht11
+  def reading_type_to_sensor("temp"), do: :dht11
+  def reading_type_to_sensor("soil_moisture"), do: :sm_sensor
 end

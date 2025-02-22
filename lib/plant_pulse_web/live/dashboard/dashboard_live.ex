@@ -1,6 +1,6 @@
 defmodule PlantPulseWeb.Dashboard.DashboardLive do
   alias PlantPulse.Readings
-  alias PlantPulse.Readings.Reading
+
   use PlantPulseWeb, :live_view
 
   alias PlantPulse.Plants
@@ -9,7 +9,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
     plant = Plants.get_plant!(plant_id)
     if connected?(socket), do: PlantPulseWeb.Endpoint.subscribe(plant.mac_address)
 
-    readings = Readings.get_most_recent_readings_for_plant(plant_id) |> IO.inspect()
+    readings = Readings.get_most_recent_readings_for_plant(plant_id)
 
     {:ok,
      assign(socket,
@@ -42,7 +42,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
   end
 
   def handle_info(%{event: "update"}, %{assigns: %{plant: plant}} = socket) do
-    readings = Readings.get_most_recent_readings_for_plant(plant.id) |> IO.inspect()
+    readings = Readings.get_most_recent_readings_for_plant(plant.id)
     {:noreply, assign(socket, readings: readings)}
   end
 
@@ -58,12 +58,16 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
             :for={reading <- @readings}
             class="bg-white shadow-md rounded-lg p-4 border border-gray-200 flex flex-col items-center"
           >
-            <div class="text-lg font-semibold"><%= reading.value_type %></div>
+            <div class="text-lg font-semibold"><%= sensor_title(reading.value_type) %></div>
             <div class="text-gray-600">Value: <%= reading.value %></div>
             <div class="text-gray-400 text-xs mt-1">
               <%= format(reading.inserted_at) %>
             </div>
-            <button class="mt-4" phx-click="read" phx-value-sensor="sm_sensor">
+            <button
+              class="mt-4"
+              phx-click="read"
+              phx-value-sensor={reading_type_to_sensor(reading.value_type)}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -90,6 +94,15 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
     datetime
     |> Timex.to_datetime("America/Chicago")
     |> Timex.format!("%Y/%m/%d at %I:%M%P", :strftime)
-    |> IO.inspect()
   end
+
+  defp sensor_title("light"), do: "Light"
+  defp sensor_title("temp"), do: "Temperature"
+  defp sensor_title("humidity"), do: "Humidity"
+  defp sensor_title("soil_moisture"), do: "Soil Moisture"
+
+  defp reading_type_to_sensor("light"), do: :photocell
+  defp reading_type_to_sensor("humidity"), do: :dht11
+  defp reading_type_to_sensor("temp"), do: :dht11
+  defp reading_type_to_sensor("soil_moisture"), do: :sm_sensor
 end

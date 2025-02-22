@@ -59,14 +59,14 @@ defmodule PlantPulse.Readings do
   end
 
   def get_most_recent_readings_for_plant(plant_id) do
-    # figure out which sensors are on plant and get most recent readings for each sensor
-    sensor_ids = Sensors.get_by_plant(plant_id) |> Enum.map(& &1.id)
-
     Reading
-    |> where([r], r.sensor_id in ^sensor_ids)
+    |> join(:inner, [r], s in assoc(r, :sensor))
+    |> join(:inner, [_r, s], p in assoc(s, :plant))
+    |> where([_r, _s, p], p.id == ^plant_id)
+    |> order_by([r, s, p], desc: r.inserted_at, asc: s.type)
+    |> distinct([r, s, p], r.value_type)
+    |> select([r, s, p], r)
     |> Repo.all()
-
-    # |> IO.inspect()
   end
 
   @doc """
