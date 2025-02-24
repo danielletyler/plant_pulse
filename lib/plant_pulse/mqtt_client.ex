@@ -50,13 +50,13 @@ defmodule PlantPulse.MQTTClient do
 
   def init(_opts), do: {:ok, %{}}
 
-  def handle_message([mac_address, type], value, state) do
-    # use mac address and type to get sensor_id through plant
-    sensor = Sensors.get_by_mac(mac_address, Sensors.reading_type_to_sensor(type))
+  def handle_message([device_id, type], value, state) do
+    # use device id and type to get sensor_id through plant
+    sensor = Sensors.get_by_device(device_id, Sensors.reading_type_to_sensor(type))
 
     Readings.create_reading(%{value: String.trim(value), value_type: type, sensor_id: sensor.id})
 
-    PlantPulseWeb.Endpoint.broadcast(mac_address, "update", %{})
+    PlantPulseWeb.Endpoint.broadcast(device_id, "update", %{})
     {:ok, state}
   end
 end

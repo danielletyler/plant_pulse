@@ -46,10 +46,10 @@ defmodule PlantPulse.Sensors do
     |> Repo.all()
   end
 
-  def get_by_mac(mac, type) do
+  def get_by_device(device_id, type) do
     Sensor
     |> join(:inner, [s], p in assoc(s, :plant))
-    |> where([_s, p], p.mac_address == ^mac)
+    |> where([_s, p], p.device_id == ^device_id)
     |> where([s, p], s.type == ^type)
     |> Repo.one()
   end
@@ -120,7 +120,7 @@ defmodule PlantPulse.Sensors do
   end
 
   def reading_type_to_sensor("light"), do: :photocell
-  def reading_type_to_sensor("humidity"), do: :dht11
-  def reading_type_to_sensor("temp"), do: :dht11
+  def reading_type_to_sensor("humidity"), do: :dht11_humi
+  def reading_type_to_sensor("temp"), do: :dht11_temp
   def reading_type_to_sensor("soil_moisture"), do: :sm_sensor
 end

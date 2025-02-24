@@ -7,7 +7,7 @@ defmodule PlantPulse.Sensors.Sensor do
   alias PlantPulse.Plants.Plant
 
   schema "sensors" do
-    field(:type, Ecto.Enum, values: [:photocell, :dht11, :sm_sensor])
+    field(:type, Ecto.Enum, values: [:photocell, :dht11_humi, :dht11_temp, :sm_sensor])
     belongs_to(:plant, Plant)
     has_many(:readings, Reading)
 

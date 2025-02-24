@@ -12,7 +12,8 @@ defmodule PlantPulse.Periodic do
 
   def handle_info(:work, state) do
     Tortoise311.publish("plant_pulse_client", "periodic/photocell", "READ")
-    Tortoise311.publish("plant_pulse_client", "periodic/dht11", "READ")
+    Tortoise311.publish("plant_pulse_client", "periodic/dht11_humi", "READ")
+    Tortoise311.publish("plant_pulse_client", "periodic/dht11_temp", "READ")
     Tortoise311.publish("plant_pulse_client", "periodic/sm_sensor", "READ")
 
     schedule_work()

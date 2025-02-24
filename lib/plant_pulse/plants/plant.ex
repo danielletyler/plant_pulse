@@ -8,7 +8,7 @@ defmodule PlantPulse.Plants.Plant do
   schema "plants" do
     field(:name, :string)
     field(:species, :string)
-    field(:mac_address, :string)
+    field(:device_id, :string)
     has_many(:sensors, Sensor)
 
     timestamps(type: :utc_datetime)
@@ -17,12 +17,12 @@ defmodule PlantPulse.Plants.Plant do
   @attrs [
     :name,
     :species,
-    :mac_address
+    :device_id
   ]
 
   @required [
     :name,
-    :mac_address
+    :device_id
   ]
 
   @doc false

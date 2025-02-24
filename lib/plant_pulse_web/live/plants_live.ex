@@ -69,7 +69,7 @@ defmodule PlantPulseWeb.PlantsLive do
       <.form :let={f} for={@changeset} phx-submit="save-new" class="w-2/3 space-y-6">
         <.input class="mb-2" field={f[:name]} type="text" phx-debounce="500" label="Name" />
         <.input field={f[:species]} type="text" phx-debounce="500" label="Species" />
-        <.input field={f[:mac_address]} type="text" phx-debounce="500" label="MAC Address" />
+        <.input field={f[:device_id]} type="text" phx-debounce="500" label="Device ID" />
         <div class="space-y-2">
           <%= inputs_for f, :sensors, fn sensors -> %>
             <.input
@@ -79,8 +79,14 @@ defmodule PlantPulseWeb.PlantsLive do
               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <.input
-              field={sensors[:dht11]}
-              label="DHT11"
+              field={sensors[:dht11_humi]}
+              label="DHT11 Humidity"
+              type="checkbox"
+              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <.input
+              field={sensors[:dht11_temp]}
+              label="DHT11 Temperature"
               type="checkbox"
               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />

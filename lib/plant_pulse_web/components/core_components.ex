@@ -652,6 +652,8 @@ defmodule PlantPulseWeb.CoreComponents do
   end
 
   def show_modal_core(js \\ %JS{}, id) when is_binary(id) do
+    IO.inspect(id)
+
     js
     |> JS.show(to: "##{id}")
     |> JS.show(
