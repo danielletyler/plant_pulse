@@ -17,6 +17,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
        plant: plant,
        show_modal: false,
        readings: readings,
+       sensors: Sensors.get_by_plant(plant.id) |> Map.new(&{&1.id, &1}),
        changeset: Sensor.threshold_changeset(%Sensor{})
      )}
   end
@@ -52,9 +53,14 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
 
   def handle_event("save-thresholds", attrs, socket) do
     %{"sensor" => thresh_attrs} = attrs
-    %{assigns: %{modal_sensor: sensor}} = socket
-    Sensors.update_thresholds(sensor, thresh_attrs)
-    {:noreply, assign(socket, show_modal: false)}
+    %{assigns: %{modal_sensor: sensor, plant: plant}} = socket
+
+    {:ok, updated_sensor} = Sensors.update_thresholds(sensor, thresh_attrs)
+
+    sensors = Map.put(socket.assigns.sensors, updated_sensor.id, updated_sensor)
+    readings = Readings.get_most_recent_readings_for_plant(plant.id)
+
+    {:noreply, assign(socket, sensors: sensors, readings: readings, show_modal: false)}
   end
 
   def handle_info(%{event: "update"}, %{assigns: %{plant: plant}} = socket) do
@@ -76,7 +82,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div
             :for={reading <- @readings}
-            class={"#{if reading_in_threshold?(reading), do: "bg-white", else: "bg-red-100"} shadow-lg rounded-lg p-5 flex flex-col"}
+            class={"#{if reading_in_threshold?(reading, @sensors), do: "bg-white", else: "bg-red-100"} shadow-lg rounded-lg p-5 flex flex-col"}
           >
             <div
               as="button"
@@ -144,14 +150,10 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
   defp reading_type_to_sensor("temp"), do: :dht11_temp
   defp reading_type_to_sensor("soil_moisture"), do: :sm_sensor
 
-  defp reading_in_threshold?(reading) do
-    %{min_threshold: min, max_threshold: max} = Sensors.get_sensor!(reading.sensor_id)
-
+  defp reading_in_threshold?(reading, sensors) do
+    %{min_threshold: min, max_threshold: max} = sensors[reading.sensor_id]
     value = get_value(reading)
 
-    greater_than_min = !min || value > min
-    lesser_than_max = !max || value < max
-
-    greater_than_min && lesser_than_max
+    (!min || value > min) && (!max || value < max)
   end
 end
