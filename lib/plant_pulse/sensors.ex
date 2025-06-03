@@ -90,6 +90,12 @@ defmodule PlantPulse.Sensors do
     |> Repo.update()
   end
 
+  def update_thresholds(%Sensor{} = sensor, attrs) do
+    sensor
+    |> Sensor.threshold_changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a sensor.
 

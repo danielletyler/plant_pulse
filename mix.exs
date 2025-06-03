@@ -53,7 +53,15 @@ defmodule PlantPulse.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:tortoise, "~> 0.10"},
       {:tortoise311, "~> 0.11"},
-      {:timex, "~> 3.7"}
+      {:timex, "~> 3.7"},
+      {:ex_heroicons, "~> 3.1.0"},
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.1.5",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1}
     ]
   end
 

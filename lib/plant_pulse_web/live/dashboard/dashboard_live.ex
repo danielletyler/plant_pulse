@@ -1,10 +1,10 @@
 defmodule PlantPulseWeb.Dashboard.DashboardLive do
+  alias PlantPulse.Sensors.Sensor
   alias PlantPulse.Sensors
   alias PlantPulse.Readings
+  alias PlantPulse.Plants
 
   use PlantPulseWeb, :live_view
-
-  alias PlantPulse.Plants
 
   def mount(%{"id" => plant_id}, _session, socket) do
     plant = Plants.get_plant!(plant_id)
@@ -16,11 +16,13 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
      assign(socket,
        plant: plant,
        show_new_modal: false,
+       show_modal: false,
        readings: readings,
        ldr_value: 0,
        humi_value: 0,
        temp_value: 0,
-       sm_value: 0
+       sm_value: 0,
+       changeset: Sensor.threshold_changeset(%Sensor{})
      )}
   end
 
@@ -43,22 +45,21 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
     {:noreply, socket}
   end
 
-  def handle_event("open-thresh-modal", %{"sensor" => sensor_id}, socket) do
-    show_modal_core("threshold-modal")
+  def handle_event("open-modal", %{"sensor-id" => sensor_id}, socket) do
+    sensor = Sensors.get_sensor!(sensor_id)
+    changeset = Sensor.threshold_changeset(sensor)
 
-    {:noreply,
-     assign(socket, thresh_sensor: sensor_id)
-     |> push_event("show_modal", %{id: "threshold-modal"})}
+    {:noreply, assign(socket, %{modal_sensor: sensor, show_modal: true, changeset: changeset})}
   end
 
-  def handle_event(
-        "update-thresh",
-        thresh_attrs,
-        %{assigns: %{thresh_sensor: sensor_id}} = socket
-      ) do
-    IO.inspect(thresh_attrs)
-    Sensors.get_sensor!(sensor_id) |> Sensors.update_sensor(thresh_attrs)
-    {:noreply, socket}
+  def handle_event("close-modal", _, socket),
+    do: {:noreply, assign(socket, show_modal: false)}
+
+  def handle_event("save-thresholds", attrs, socket) do
+    %{"sensor" => thresh_attrs} = attrs
+    %{assigns: %{modal_sensor: sensor}} = socket
+    Sensors.update_thresholds(sensor, thresh_attrs)
+    {:noreply, assign(socket, show_modal: false)}
   end
 
   def handle_info(%{event: "update"}, %{assigns: %{plant: plant}} = socket) do
@@ -80,63 +81,57 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <div
             :for={reading <- @readings}
-            class="bg-white shadow-md rounded-lg p-5 border border-gray-200 flex flex-col"
+            class={"#{if reading_in_threshold?(reading), do: "bg-white", else: "bg-red-100"} shadow-lg rounded-lg p-5 flex flex-col"}
           >
-            <div class="w-full h-full flex items-start justify-end">
-              <button phx-click="open-thresh-modal" phx-value-sensor={reading.sensor_id}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="size-6"
-                  width="20"
-                  height="20"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
-                  />
-                </svg>
-              </button>
+            <div class="w-full h-full flex items-start justify-end"></div>
+            <div
+              as="button"
+              class="flex justify-end  hover:cursor-pointer"
+              phx-click="open-modal"
+              phx-value-sensor-id={reading.sensor_id}
+            >
+              <Heroicons.icon name="wrench-screwdriver" type="outline" class="h-3 w-3" />
             </div>
             <div class="text-lg font-semibold"><%= sensor_title(reading.value_type) %></div>
-            <div class="text-gray-600">Value: <%= reading.value %></div>
+            <div class="flex">
+              <div class="text-gray-600">Value: <%= get_value(reading) %></div>
+              <div :if={reading.value_type == "soil_moisture"}>%</div>
+            </div>
             <div class="flex">
               <div class="text-gray-400 text-xs mt-1">
                 <%= format(reading.inserted_at) %>
               </div>
-              <button phx-click="read" phx-value-sensor={reading_type_to_sensor(reading.value_type)}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                  />
-                </svg>
-              </button>
+              <div
+                as="button"
+                class="flex justify-end hover:cursor-pointer"
+                phx-click="read"
+                phx-value-sensor={reading_type_to_sensor(reading.value_type)}
+              >
+                <Heroicons.icon name="arrow-path" type="outline" class="h-4 w-4" />
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <.modal id="threshold-modal">
-      <.form :let={f} for={%{}} phx-submit="update-thresh" class="w-2/3 space-y-6">
-        <.input class="mb-2" field={f[:min]} type="text" phx-debounce="500" label="Minimum" />
-        <.input class="mb-2" field={f[:max]} type="text" phx-debounce="500" label="Maximum" />
+
+    <.new_modal id="plant-settings-modal" show={@show_modal} close_modal="close-modal">
+      <.form :let={f} for={@changeset} phx-submit="save-thresholds" class="w-2/3 space-y-6">
+        <.input field={f[:min_threshold]} type="number" phx-debounce="500" label="Min" />
+        <.input field={f[:max_threshold]} type="number" phx-debounce="500" label="Max" />
         <.button type="submit">Submit</.button>
       </.form>
-    </.modal>
+    </.new_modal>
     """
+  end
+
+  defp get_value(%{value_type: "soil_moisture", value: value}) do
+    val = ((3000 - value) / (3000 - 900) * 100) |> trunc()
+    min(100, max(0, val))
+  end
+
+  defp get_value(reading) do
+    reading.value
   end
 
   defp format(datetime) do
@@ -154,4 +149,15 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
   defp reading_type_to_sensor("humidity"), do: :dht11_humi
   defp reading_type_to_sensor("temp"), do: :dht11_temp
   defp reading_type_to_sensor("soil_moisture"), do: :sm_sensor
+
+  defp reading_in_threshold?(reading) do
+    %{min_threshold: min, max_threshold: max} = Sensors.get_sensor!(reading.sensor_id)
+
+    value = get_value(reading)
+
+    greater_than_min = !min || value > min
+    lesser_than_max = !max || value < max
+
+    greater_than_min && lesser_than_max
+  end
 end
