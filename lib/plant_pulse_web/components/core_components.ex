@@ -41,7 +41,7 @@ defmodule PlantPulseWeb.CoreComponents do
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
 
-  def modal(assigns) do
+  def old_modal(assigns) do
     ~H"""
     <div
       id={@id}
@@ -89,7 +89,7 @@ defmodule PlantPulseWeb.CoreComponents do
     """
   end
 
-  def new_modal(assigns) do
+  def modal(assigns) do
     ~H"""
     <div :if={@show} id={@id} class="relative z-50">
       <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" />

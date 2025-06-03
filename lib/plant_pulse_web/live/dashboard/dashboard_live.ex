@@ -15,7 +15,6 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
     {:ok,
      assign(socket,
        plant: plant,
-       show_new_modal: false,
        show_modal: false,
        readings: readings,
        ldr_value: 0,
@@ -115,13 +114,13 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
       </div>
     </div>
 
-    <.new_modal id="plant-settings-modal" show={@show_modal} close_modal="close-modal">
+    <.modal id="plant-settings-modal" show={@show_modal} close_modal="close-modal">
       <.form :let={f} for={@changeset} phx-submit="save-thresholds" class="w-2/3 space-y-6">
         <.input field={f[:min_threshold]} type="number" phx-debounce="500" label="Min" />
         <.input field={f[:max_threshold]} type="number" phx-debounce="500" label="Max" />
         <.button type="submit">Submit</.button>
       </.form>
-    </.new_modal>
+    </.modal>
     """
   end
 

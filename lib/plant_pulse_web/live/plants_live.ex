@@ -14,6 +14,7 @@ defmodule PlantPulseWeb.PlantsLive do
     {:ok,
      assign(socket,
        plants: plants,
+       show_modal: false,
        changeset: Plants.change_plant(%Plant{sensors: [Sensors.change_sensor(%Sensor{})]})
      )}
   end
@@ -46,10 +47,18 @@ defmodule PlantPulseWeb.PlantsLive do
     {:noreply, assign(socket, changeset: changeset)}
   end
 
+  def handle_event("show-modal", _, socket) do
+    {:noreply, assign(socket, show_modal: true)}
+  end
+
+  def handle_event("close-modal", _, socket) do
+    {:noreply, assign(socket, show_modal: false)}
+  end
+
   def render(assigns) do
     ~H"""
     <div>
-      <.button class="mb-4" phx-click={show_modal_core("new-plant-modal")} variant="secondary">
+      <.button class="mb-4" phx-click="show-modal" variant="secondary">
         New Plant
       </.button>
     </div>
@@ -65,7 +74,7 @@ defmodule PlantPulseWeb.PlantsLive do
       </.clickable_card>
     </div>
 
-    <.modal id="new-plant-modal" on_cancel={JS.push("reset-new-plant")}>
+    <.modal id="new-plant-modal" show={@show_modal} close_modal="close-modal">
       <.form :let={f} for={@changeset} phx-submit="save-new" class="w-2/3 space-y-6">
         <.input class="mb-2" field={f[:name]} type="text" phx-debounce="500" label="Name" />
         <.input field={f[:species]} type="text" phx-debounce="500" label="Species" />
