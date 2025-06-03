@@ -17,10 +17,6 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
        plant: plant,
        show_modal: false,
        readings: readings,
-       ldr_value: 0,
-       humi_value: 0,
-       temp_value: 0,
-       sm_value: 0,
        changeset: Sensor.threshold_changeset(%Sensor{})
      )}
   end
@@ -82,7 +78,6 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
             :for={reading <- @readings}
             class={"#{if reading_in_threshold?(reading), do: "bg-white", else: "bg-red-100"} shadow-lg rounded-lg p-5 flex flex-col"}
           >
-            <div class="w-full h-full flex items-start justify-end"></div>
             <div
               as="button"
               class="flex justify-end  hover:cursor-pointer"
@@ -114,7 +109,7 @@ defmodule PlantPulseWeb.Dashboard.DashboardLive do
       </div>
     </div>
 
-    <.modal id="plant-settings-modal" show={@show_modal} close_modal="close-modal">
+    <.modal id="thresholds-modal" show={@show_modal} close_modal="close-modal">
       <.form :let={f} for={@changeset} phx-submit="save-thresholds" class="w-2/3 space-y-6">
         <.input field={f[:min_threshold]} type="number" phx-debounce="500" label="Min" />
         <.input field={f[:max_threshold]} type="number" phx-debounce="500" label="Max" />
