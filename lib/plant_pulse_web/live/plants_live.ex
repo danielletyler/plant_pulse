@@ -58,13 +58,17 @@ defmodule PlantPulseWeb.PlantsLive do
   def render(assigns) do
     ~H"""
     <div>
-      <.button class="mb-4" phx-click="show-modal" variant="secondary">
+      <.button class="mb-4" phx-click="show-modal">
         New Plant
       </.button>
     </div>
 
     <div class="grid grid-cols-3 gap-4">
-      <.clickable_card :for={plant <- @plants} phx-click={JS.navigate(~p"/plants/#{plant.id}")}>
+      <.clickable_card
+        :for={plant <- @plants}
+        phx-click={JS.navigate(~p"/plants/#{plant.id}")}
+        class="bg-white"
+      >
         <div class="p-4">
           <h3 class="text-xl font-semibold text-gray-800"><%= plant.name %></h3>
           <p class="text-gray-600 mt-2">
