@@ -1,0 +1,10 @@
+{application,tw_merge,
+             [{applications,[kernel,stdlib,elixir,logger,nimble_parsec,
+                             deep_merge]},
+              {description,"Elixir utilities to merge TailwindCss classes"},
+              {modules,['Elixir.TwMerge','Elixir.TwMerge.Cache',
+                        'Elixir.TwMerge.Class','Elixir.TwMerge.ClassTree',
+                        'Elixir.TwMerge.Config','Elixir.TwMerge.Parser',
+                        'Elixir.TwMerge.Validator']},
+              {registered,[]},
+              {vsn,"0.1.1"}]}.
