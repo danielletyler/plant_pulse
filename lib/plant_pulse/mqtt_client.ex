@@ -1,5 +1,4 @@
 defmodule PlantPulse.MQTTClient do
-  alias PlantPulse.Sensors.Sensor
   alias PlantPulse.Readings
   alias PlantPulse.Sensors
   use Tortoise311.Handler
@@ -17,11 +16,10 @@ defmodule PlantPulse.MQTTClient do
   def start_link(_opts) do
     case Tortoise311.Supervisor.start_child(
            client_id: "plant_pulse_client",
-           #  handler: {Tortoise311.Handler.Logger, []},
            handler: {__MODULE__, []},
            server: {
              Tortoise311.Transport.SSL,
-             host: "40c4489d8b17431396e6d975f75207a4.s1.eu.hivemq.cloud",
+             host: "********",
              port: 8883,
              opts: [
                # Use this only for testing; remove in production
@@ -29,8 +27,8 @@ defmodule PlantPulse.MQTTClient do
                {:depth, 3}
              ]
            },
-           user_name: "plant-pulse-admin",
-           password: "SevenIron1998!",
+           user_name: "*******",
+           password: "*******",
            subscriptions: [
              {"+/light", 0},
              {"+/humidity", 0},
