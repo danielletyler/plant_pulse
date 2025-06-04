@@ -13,7 +13,7 @@ const char* WIFI_SSID = "******";
 const char* WIFI_PASSWORD = "********";
 
 // MQTT Configuration
-const char* MQTT_BROKER = "40c4489d8b17431396e6d975f75207a4.s1.eu.hivemq.cloud";
+const char* MQTT_BROKER = "*******";
 const int MQTT_PORT = 8883;
 const char* MQTT_USERNAME = "******";
 const char* MQTT_PASSWORD = "******";
